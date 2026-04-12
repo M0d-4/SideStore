@@ -3,3 +3,4 @@
 //
 
 #import "NSAttributedString+Markdown.h"
+#include "../LiveContainerSupport/XPCServer.h"
