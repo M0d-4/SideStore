@@ -91,15 +91,15 @@ private struct ActiveAppsWidgetView: View
         }
         .foregroundStyle(.white)
         .containerBackground(for: .widget) {
-            if renderingMode == .accented
+            if colorScheme == .dark
+            {
+                LinearGradient(colors: [.altGradientDark, .altGradientExtraDark], startPoint: .top, endPoint: .bottom)
+            }
+            else if renderingMode == .accented
             {
                 // Plain dark background in tinted mode so the system's
                 // accent colour composites cleanly over it.
                 Color.black
-            }
-            else if colorScheme == .dark
-            {
-                LinearGradient(colors: [.altGradientDark, .altGradientExtraDark], startPoint: .top, endPoint: .bottom)
             }
             else
             {
