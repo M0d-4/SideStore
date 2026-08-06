@@ -151,7 +151,8 @@ public final class CertificateManager: @unchecked Sendable {
         if let data = Keychain.shared[certificateSerial: serialNumber] {
             if data.isPKCS12 {
                 let savedPassword = getCertificateMetadata(for: serialNumber)?["machineIdentifier"]
-                if let cert = try? CertificateStore.load(data, password: savedPassword) {
+                var cert = (try? CertificateStore.load(data, password: savedPassword)) ?? (try? CertificateStore.load(data, password: nil))
+                if let cert {
                     if let metadata = getCertificateMetadata(for: serialNumber) {
                         cert.machineIdentifier = metadata["machineIdentifier"]
                         cert.machineName = metadata["machineName"]
