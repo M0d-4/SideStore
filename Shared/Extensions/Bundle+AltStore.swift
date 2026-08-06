@@ -19,7 +19,7 @@ public extension Bundle
         public static let altBundleID = "ALTBundleIdentifier"
         public static let storeAppBundleIdentifier =  "com.SideStore.SideStore"
         // public static var appbundleIdentifier = Bundle.main.bundleIdentifier
-        public static let appbundleIdentifier = "com.SideStore.SideStore"   // for now lets use what we had so far 
+        public static let appbundleIdentifier = Bundle.appbundleIdentifier   // for now lets use what we had so far
 
         public static let devicePairingString = "ALTPairingFile"
         public static let urlTypes = "CFBundleURLTypes"
@@ -58,16 +58,20 @@ public extension Bundle
 
 public extension Bundle
 {
-    static let baseAltStoreAppGroupID = "group." + Bundle.Info.appbundleIdentifier
+    @objc dynamic static let baseAltStoreAppGroupID = "group." + Bundle.Info.appbundleIdentifier
+    
+    @objc dynamic static let appbundleIdentifier = "com.SideStore.SideStore"
 
     var appGroups: [String] {
         return self.infoDictionary?[Bundle.Info.appGroups] as? [String] ?? []
     }
     
-    var altstoreAppGroup: String? {        
+    @objc dynamic var altstoreAppGroup: String? {
         let appGroup = self.appGroups.first { $0.contains(Bundle.baseAltStoreAppGroupID) }
         return appGroup
     }
+    
+    @objc dynamic static let realMainBundle = Bundle.main
     
     var completeInfoDictionary: [String : Any]? {
         let infoPlistURL = self.infoPlistURL

@@ -32,6 +32,7 @@ extension MyAppsViewController
     }
 }
 
+@objc(MyAppsViewController)
 class MyAppsViewController: UICollectionViewController, PeekPopPreviewing
 {
     private let coordinator = NSFileCoordinator()
@@ -2049,7 +2050,8 @@ extension MyAppsViewController
         }
         let certificateMenu = UIMenu(title: NSLocalizedString("Certificate", comment: ""), image: UIImage(systemName: "key"), children: certSubmenuActions)
         
-        if installedApp.resignedBundleIdentifier == Bundle.main.bundleIdentifier
+        // show fixed menu for sidestore itself
+        if installedApp.resignedBundleIdentifier == Bundle.realMainBundle.bundleIdentifier
         {
             actions = [refreshAction, resignAction, certificateMenu, changeIconMenu]
         }

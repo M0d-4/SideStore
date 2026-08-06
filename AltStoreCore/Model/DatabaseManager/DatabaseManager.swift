@@ -359,7 +359,7 @@ private extension DatabaseManager
         context.performAndWait {
             do
             {
-                guard let localAppBundle = ALTApplication(fileURL: Bundle.main.bundleURL) else { return }
+                guard let localAppBundle = ALTApplication(fileURL: Bundle.realMainBundle.bundleURL) else { return }
                 
                 #if !targetEnvironment(simulator)
                 guard localAppBundle.provisioningProfile != nil else {
@@ -418,7 +418,7 @@ private extension DatabaseManager
                     // figure out if the current AltStoreApp is signed with "Use Main Profie" option
                     // by checking if the first extension's entitlement's application-identifier matches current one
                     repeat {
-                        guard let pluginURL = Bundle.main.builtInPlugInsURL else {
+                        guard let pluginURL = Bundle.realMainBundle.builtInPlugInsURL else {
                             installedApp.useMainProfile = true
                             break
                         }
@@ -439,7 +439,7 @@ private extension DatabaseManager
                             break
                         }
                         
-                        if appId.hasSuffix(Bundle.main.bundleIdentifier!) {
+                        if appId.hasSuffix(Bundle.realMainBundle.bundleIdentifier!) {
                             installedApp.useMainProfile = true
                         } else {
                             installedApp.useMainProfile = false
@@ -493,7 +493,7 @@ private extension DatabaseManager
                 if replaceCachedApp
                 {
                     let fileURL = installedApp.fileURL
-                    let bundleURL = Bundle.main.bundleURL
+                    let bundleURL = Bundle.realMainBundle.bundleURL
                     let altstoreAppID = StoreApp.altstoreAppID
                     let extensionBundleIDMap = installedExtensions.reduce(into: [String: String]()) { dict, ext in
                         dict[ext.resignedBundleIdentifier] = ext.bundleIdentifier
