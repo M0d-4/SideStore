@@ -111,11 +111,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             do {
                 let logger = try ConsoleLog.getConsoleLog()
                 debugLog(logger, "[SideBackup]: Attempting to open return URL: \(responseURL.absoluteString), scheme: \(responseURL.scheme ?? "nil")")
-                UIApplication.shared.open(responseURL, options: [:]) { success in
-                    debugLog(logger, "[SideBackup]: Sent response to app with success: \(success)")
-                    if !success {
-                        debugLog(logger, "[SideBackup]: WARNING - Failed to open SideStore return URL. Scheme '\(responseURL.scheme ?? "nil")' may not be registered or SideStore is not installed.")
-                    }
+                let success1 = await UIApplication.shared.open(responseURL, options: [:])
+                debugLog(logger, "[SideBackup]: Sent response to app with success: \(success1)")
+                if success1 {
+                    return
+                }
+                debugLog(logger, "[SideBackup]: WARNING - Failed to open SideStore return URL. Scheme '\(responseURL.scheme ?? "nil")' may not be registered or SideStore is not installed.")
+
+                // Fall back to sidestore:// when the caller uses an unavailable custom scheme.
+                components.scheme = "sidestore"
+                guard let fallbackURL = components.url else { return }
+                let success2 = await UIApplication.shared.open(fallbackURL, options: [:])
+                debugLog(logger, "[SideBackup]: Sent fallback response to app with success: \(success2)")
+                if !success2 {
+                    debugLog(logger, "[SideBackup]: WARNING - Failed to open SideStore fallback URL. Scheme '\(fallbackURL.scheme ?? "nil")' may not be registered or SideStore is not installed.")
                 }
             } catch {
                 var failureComponents = components
@@ -125,7 +134,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                                                 "errorCode": String(nsError.code),
                                                 "errorDescription": nsError.localizedDescription].map { URLQueryItem(name: $0, value: $1) }
                 if let failureURL = failureComponents.url {
-                    UIApplication.shared.open(failureURL, options: [:])
+                    await UIApplication.shared.open(failureURL, options: [:])
                 }
             }
         }
